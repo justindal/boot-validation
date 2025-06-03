@@ -104,11 +104,44 @@ Both implementations provide identical command-line interfaces:
 
 ### Prerequisites
 
-- QNX Software Development Platform 7.0+
+- QNX Software Development Platform 7.0+ (QNX 8.0 recommended)
 - QNX Momentics IDE or command-line tools
 - ARM64 cross-compilation toolchain
-- wolfSSL library (for post-quantum implementation)
+- wolfSSL source code (for post-quantum implementation)
 - OpenSSL library (for traditional implementation)
+
+### Building wolfSSL with Post-Quantum Support
+
+Before building the post-quantum implementation, you must compile wolfSSL with Dilithium support for QNX:
+
+```bash
+# Navigate to wolfSSL source directory
+cd /path/to/wolfssl-source
+
+# Generate configure script
+./autogen.sh
+
+# Configure wolfSSL with Dilithium support for QNX ARM64
+./configure --enable-dilithium --host=aarch64-unknown-nto-qnx8.0 --prefix=$PWD/install
+
+# Build wolfSSL
+make all
+
+# Install to local directory
+make install
+```
+
+### Linking wolfSSL with the Project
+
+After building wolfSSL, copy the library to the project:
+
+```bash
+# Copy the built library to the project libs directory
+cp /path/to/wolfssl-source/install/lib/libwolfssl.so BootValidation/libs/
+
+# Ensure the Makefile points to the correct library path
+# The Makefile already includes: LIBS += -L./libs -lwolfssl
+```
 
 ### Building Post-Quantum Implementation
 
